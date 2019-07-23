@@ -1,0 +1,8 @@
+chromedriver_win32/
+twittercreds.py
+tweetapi.json
+pinterest_api_keys.json
+FeaturedTweets*
+img/
+img_compressed/
+pinterestcreds.py
