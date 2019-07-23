@@ -6,3 +6,4 @@ FeaturedTweets*
 img/
 img_compressed/
 pinterestcreds.py
+__pycache__/
