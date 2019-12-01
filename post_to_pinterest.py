@@ -73,7 +73,7 @@ def make_pins(memes):
                 post_meme(meme, img_url, description)
                 
                 count += 1
-                if count % 9 == 0:
+                if count % 5 == 0:
                     print(count)
                     time.sleep(3700)
                     
