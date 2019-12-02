@@ -8,3 +8,7 @@ img_compressed/
 pinterestcreds.py
 __pycache__/
 instagramcreds.py
+*.log
+*.ipynb
+.ipynb_checkpoints/
+geckodriver-v0.26.0-win64/
