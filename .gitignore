@@ -12,3 +12,5 @@ instagramcreds.py
 *.ipynb
 .ipynb_checkpoints/
 geckodriver-v0.26.0-win64/
+log_*
+master_log.csv
