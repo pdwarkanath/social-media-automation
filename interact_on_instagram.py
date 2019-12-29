@@ -11,7 +11,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException, ElementClickInterceptedException
 import time
 import pandas as pd
-import sys
 
 cap = DesiredCapabilities().FIREFOX
 
@@ -102,46 +101,12 @@ def follow_user(driver, url):
     timestamp = time.strftime('%Y/%m/%d %H:%M:%S')
     return {'timestamp': f'{timestamp}', 'action': 'Follow', 'account': account, 'url': url}
 
-def unfollow_user(driver, j):
-    following_link = driver.find_elements_by_xpath("//button[contains(text(), 'Following')]")[j]
-    driver.implicitly_wait(1)
-    following_link.click()
-    unfollow_button = driver.find_element_by_xpath("//button[contains(text(), 'Unfollow')]")
-    unfollow_button.click()
-    time.sleep(2)
-    
-    #return {'timestamp': f'{timestamp}', 'action': 'Unfollow', 'account': account} 
-
-def unfollow_bulk(driver, max_num = 10):
-	log = []
-	driver.get('https://www.instagram.com/weekinmemes/following')
-	following_link = driver.find_element_by_css_selector('a[href="/weekinmemes/following/"]')
-	following_link.click()
-	count = 0
-	j = 0
-	accounts = driver.find_elements_by_class_name('notranslate')
-	while count < max_num:
-		try:
-			account = accounts[count].text
-			if account in do_not_unfollow:
-				j += 1
-				count += 1
-				continue
-			unfollow_user(driver, j)
-			timestamp = time.strftime('%Y/%m/%d %H:%M:%S')
-			print('Unfollow ' + account)
-			log.append({'timestamp': f'{timestamp}', 'action': 'Unfollow', 'account': account})
-		except NoSuchElementException:
-			return log + unfollow_bulk(driver, max_num = max_num - count)
-		count += 1
-	return log
-
 def automate_interactions(driver, urls):
     log = []
     for url in urls:
         driver.get(url)
         # Like
-        to_like = random.choice([0,1])
+        to_like = random.choice([0,1], p = [0.1, 0.9])
 
         if to_like:
             action = like_post(driver, url)
@@ -149,7 +114,7 @@ def automate_interactions(driver, urls):
             log.append(action)
 
         # Comment
-        to_comment = random.choice([0,1])
+        to_comment = random.choice([0,1], p = [0.7, 0.3])
 
         if to_comment:
             comment = get_comment(comments)
@@ -158,7 +123,7 @@ def automate_interactions(driver, urls):
             log.append(action)
 
         # Follow
-        to_follow = random.choice([0,1])
+        to_follow = random.choice([0,1], p = [0.3, 0.7])
 
         if to_follow:
             action = follow_user(driver, url)
@@ -189,24 +154,19 @@ comments = ['ek number :ok_hand:',
        ]
 
 
-top_posts = random.choice([0,1], p = [0.8, 0.2])
-print(top_posts)
-urls = get_hashtag_posts_urls(hashtag, max_posts= 10, top_posts=top_posts)
+if_top_posts = random.choice([0,1], p = [0.8, 0.2])
+print(if_top_posts)
+urls = get_hashtag_posts_urls(hashtag, max_posts= 10, top_posts=if_top_posts)
 
-to_do = sys.argv[1]
+
 time_now = time.strftime('%Y%m%d%H%M')
 
-if to_do == 'interact':
-	log_df = automate_interactions(driver, urls)
-elif to_do == 'unfollow':
-	log = unfollow_bulk(driver)
-	log_df = pd.io.json.json_normalize(log)
-
+log_df = automate_interactions(driver, urls)
 driver.close()
 
 log_df.to_csv(f'log_{time_now}.csv', index = False)
 master_log_df = pd.read_csv('master_log.csv')
-master_log_df = pd.concat([master_log_df, log_df], ignore_index=True)
+master_log_df = pd.concat([master_log_df, log_df], ignore_index=True, sort = False)
 master_log_df.to_csv('master_log.csv', index = False)
 
 
