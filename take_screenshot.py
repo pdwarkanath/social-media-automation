@@ -3,11 +3,16 @@ import pyautogui
 import os
 import time
 import twittercreds
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.action_chains import ActionChains
 import pandas as pd
 import sys
 
-driver_path = os.path.join(os.getcwd(),'chromedriver_win32', 'chromedriver.exe')
+cap = DesiredCapabilities().FIREFOX
+
+#driver_path = os.path.join(os.getcwd(),'chromedriver_win32', 'chromedriver.exe')
+
+driver_path = os.path.join(os.getcwd(),'geckodriver-v0.26.0-win64', 'geckodriver.exe')
 
 username = twittercreds.username
 password = twittercreds.password
@@ -17,12 +22,13 @@ tweets = pd.read_csv(sys.argv[1])
 
 # Login
 
-driver = webdriver.Chrome(driver_path)
+driver = webdriver.Firefox(capabilities=cap, executable_path=driver_path)
 driver.maximize_window()
 
 driver.get('https://twitter.com/login')
-username_field = driver.find_element_by_class_name("js-username-field")
-password_field = driver.find_element_by_class_name("js-password-field")
+time.sleep(3)
+username_field = driver.find_element_by_name("session[username_or_email]")
+password_field = driver.find_element_by_name("session[password]")
 
 username_field.send_keys(username)
 driver.implicitly_wait(1)
@@ -30,7 +36,7 @@ driver.implicitly_wait(1)
 password_field.send_keys(password)
 driver.implicitly_wait(1)
 
-driver.find_element_by_class_name("EdgeButtom--medium").click()
+driver.find_element_by_xpath("//div[@data-testid='LoginForm_Login_Button']").click()
 driver.implicitly_wait(2)
 
 def take_screenshot(tweet, meme, count, isreply = 'no'):

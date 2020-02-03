@@ -76,7 +76,7 @@ username = instagramcreds.username
 password = instagramcreds.password
 
 login_to_instagram(driver, username, password)
-time.sleep(2)
+time.sleep(5)
 log = unfollow_bulk(driver)
 log_df = pd.io.json.json_normalize(log)
 driver.close()

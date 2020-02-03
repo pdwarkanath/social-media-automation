@@ -33,18 +33,6 @@ def get_hashtags(meme_bs):
     base_hashtags = '#MemeTemplate #Template #IndianMemes #Memes #DesiMemes #WeekInMemes'
     return f'{hashtags} {base_hashtags}'
 
-def get_template_name(img_url):
-    x = img_url.index('/templates/') + len('/templates/')
-    template_name = img_url[x:-4]
-    tn = template_name.split('-')
-    for i, w in enumerate(tn):
-        if w.isupper():
-            continue
-        else:
-            tn[i] = w.title()
-    template_name = ' '.join(tn)
-    return template_name
-
 access_token = pinterestcreds.access_token
 
 def post_meme(meme, img_url, description):
@@ -67,7 +55,7 @@ def make_pins(memes):
         if len(meme_templates) > 0:
             for template in meme_templates:
                 img_url = template['src']
-                template_name = get_template_name(img_url)
+                template_name = template['alt']
                 description = urllib.parse.quote(f'{template_name} {hashtags}')
                 
                 post_meme(meme, img_url, description)
