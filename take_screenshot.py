@@ -22,7 +22,8 @@ tweets = pd.read_csv(sys.argv[1])
 
 # Login
 
-driver = webdriver.Firefox(capabilities=cap, executable_path=driver_path)
+driver = webdriver.Firefox(executable_path=driver_path)
+driver.implicitly_wait(10)
 driver.maximize_window()
 
 driver.get('https://twitter.com/login')
